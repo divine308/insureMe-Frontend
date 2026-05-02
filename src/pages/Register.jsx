@@ -108,6 +108,9 @@ export default function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [inlineError, setInlineError] = useState(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
  const [form, setForm] = useState({
   name: "",
   email: "",
@@ -124,23 +127,67 @@ export default function Register() {
   }, 3000);
 };
 
+const isValidEmail = (email) => {
+  if (!email) return false;
+
+  const clean = email.trim().toLowerCase();
+
+  if (!clean.includes("@")) return false;
+  if (clean.split("@").length !== 2) return false;
+
+  const [local, domain] = clean.split("@");
+
+  if (!local || local.length < 1) return false;
+
+  if (!domain || domain.length < 3) return false;
+
+  if (!domain.includes(".")) return false;
+
+  if (domain.startsWith(".") || domain.endsWith(".")) return false;
+
+  if (clean.includes(" ")) return false;
+
+  const emailRegex =
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  return emailRegex.test(clean);
+};
+
+
 const validate = () => {
   let err = {};
+  setInlineError(null);
 
   if (mode === "register") {
     if (!form.name) err.name = true;
     if (!form.email) err.email = true;
+    if (!form.company) err.company = true;
     if (!form.password) err.password = true;
     if (!form.confirmPassword) err.confirmPassword = true;
 
-    if (form.password && form.confirmPassword && form.password !== form.confirmPassword) {
+    if (form.email && !isValidEmail(form.email)) {
+      err.email = true;
+      setInlineError("Please enter a valid email address (example@gmail.com).");
+    }
+
+    if (
+      form.password &&
+      form.confirmPassword &&
+      form.password !== form.confirmPassword
+    ) {
       err.confirmPassword = true;
+      setInlineError("Passwords do not match.");
     }
   }
 
   if (mode === "login") {
     if (!form.email) err.email = true;
     if (!form.password) err.password = true;
+
+    if (form.email && !isValidEmail(form.email)) {
+      err.email = true;
+      setInlineError("Please enter a valid email address.");
+    }
   }
 
   setErrors(err);
@@ -148,17 +195,42 @@ const validate = () => {
   return Object.keys(err).length === 0;
 };
 
- const submit = async () => {
+//  const submit = async () => {
+//   setInlineError(null);
+//   try {
+//     setLoading(true);
+
+//     await registerUser(form);
+
+//     showToast("OTP sent to your email", "success");
+//     setStep(2);
+//   } catch (err) {
+//    showToast(err.response?.data?.error || "Registration failed", "error");
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
+const submit = async () => {
   setInlineError(null);
+
+  if (!acceptedTerms) {
+    setInlineError("You must accept the Terms & Privacy Policy before registering.");
+    return;
+  }
+
   try {
     setLoading(true);
 
-    await registerUser(form);
+    await registerUser({
+    ...form,
+    acceptedTerms
+  });
 
     showToast("OTP sent to your email", "success");
     setStep(2);
   } catch (err) {
-   showToast(err.response?.data?.error || "Registration failed", "error");
+    showToast(err.response?.data?.error || "Registration failed", "error");
   } finally {
     setLoading(false);
   }
@@ -325,6 +397,47 @@ useEffect(() => {
           </div>
         </div>
 
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 10,
+            marginTop: 8,
+            marginBottom: 8,
+            fontSize: 12,
+            color: "#64748b",
+            lineHeight: 1.4
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={acceptedTerms}
+            onChange={(e) => {
+              setAcceptedTerms(e.target.checked);
+              setInlineError(null);
+            }}
+            style={{ marginTop: 3 }}
+          />
+
+          <span>
+            I agree to the{" "}
+            <span
+              onClick={() => setShowTerms(true)}
+              style={{ color: "#0f172a", fontWeight: 600, cursor: "pointer" }}
+            >
+              Terms of Service
+            </span>{" "}
+            and{" "}
+            <span
+              onClick={() => setShowPrivacy(true)}
+              style={{ color: "#0f172a", fontWeight: 600, cursor: "pointer" }}
+            >
+              Privacy Policy
+            </span>
+            .
+          </span>
+        </div>
+
           <button
             style={button}
             onClick={() => {
@@ -473,7 +586,136 @@ useEffect(() => {
 
     </div>
 
-    {/* TOAST */}
+    {showTerms && (
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0,0,0,0.5)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 9999,
+          padding: 20
+        }}
+      >
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 14,
+            padding: 20,
+            maxWidth: 600,
+            width: "100%",
+            maxHeight: "80vh",
+            overflowY: "auto",
+            border: "1px solid #e2e8f0"
+          }}
+        >
+          <h2 style={{ marginTop: 0, color: "#0f172a" }}>Terms of Service</h2>
+
+          <p style={{ fontSize: 13, color: "#475569" }}>
+            By using InsureMe API, you agree that:
+          </p>
+
+          <ul style={{ fontSize: 13, color: "#475569", lineHeight: 1.7 }}>
+            <li>You will not use the API for illegal, fraudulent, or abusive activities.</li>
+            <li>You are responsible for protecting your API key.</li>
+            <li>API credits are consumed per request and are non-refundable.</li>
+            <li>InsureMe may suspend accounts involved in abuse or suspicious usage.</li>
+            <li>You agree that AI responses may not always be perfect.</li>
+          </ul>
+
+          <p style={{ fontSize: 13, color: "#475569" }}>
+            These terms may be updated at any time.
+          </p>
+
+          <button
+            style={{
+              marginTop: 14,
+              width: "100%",
+              padding: 12,
+              borderRadius: 10,
+              border: "none",
+              background: "#0f172a",
+              color: "#fff",
+              cursor: "pointer"
+            }}
+            onClick={() => setShowTerms(false)}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    )}
+
+    {showPrivacy && (
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0,0,0,0.5)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 9999,
+          padding: 20
+        }}
+      >
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 14,
+            padding: 20,
+            maxWidth: 600,
+            width: "100%",
+            maxHeight: "80vh",
+            overflowY: "auto",
+            border: "1px solid #e2e8f0"
+          }}
+        >
+          <h2 style={{ marginTop: 0, color: "#0f172a" }}>Privacy Policy</h2>
+
+          <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.7 }}>
+            InsureMe collects basic account information such as your name, email, and company.
+            We also store your API usage logs to improve security and performance.
+          </p>
+
+          <ul style={{ fontSize: 13, color: "#475569", lineHeight: 1.7 }}>
+            <li>Your password is encrypted and never stored in plain text.</li>
+            <li>Your API keys are private and must not be shared.</li>
+            <li>We do not sell your personal data.</li>
+            <li>We may block accounts involved in suspicious activity.</li>
+          </ul>
+
+          <p style={{ fontSize: 13, color: "#475569" }}>
+            If you delete your account, your data may be removed permanently.
+          </p>
+
+          <button
+            style={{
+              marginTop: 14,
+              width: "100%",
+              padding: 12,
+              borderRadius: 10,
+              border: "none",
+              background: "#0f172a",
+              color: "#fff",
+              cursor: "pointer"
+            }}
+            onClick={() => setShowPrivacy(false)}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    )}
+
     {toast && (
       <div
         style={{
@@ -494,4 +736,3 @@ useEffect(() => {
   </div>
 );
 }
-
