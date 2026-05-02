@@ -115,7 +115,8 @@ export default function Overview() {
   const [loading, setLoading] = useState(false);
   const hasApiKey = user?.apiKeys?.length > 0;
   const [copied, setCopied] = useState(false);
-
+  const [showKeyWarning, setShowKeyWarning] = useState(false);
+  const [generatedKey, setGeneratedKey] = useState(null);
   const handleLogout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("company");
@@ -500,23 +501,7 @@ useEffect(() => {
       {!hasApiKey && (
         <button
           disabled={loading}
-          onClick={async () => {
-            try {
-              setLoading(true);
-
-              const res = await generateApiKey();
-              const newKey = res.data.apiKey;
-              await fetchDashboard();
-              setUser(prev => ({
-                ...prev,
-                apiKeys: [{ key: newKey }]
-              }));
-            } catch (err) {
-              console.log(err);
-            } finally {
-              setLoading(false);
-            }
-          }}
+          onClick={() => setShowKeyWarning(true)}
           style={{
             marginTop: 12,
             padding: "10px 14px",
@@ -556,7 +541,7 @@ useEffect(() => {
         >
           <span>
             {hasApiKey
-              ? user.apiKeys[0].key
+              ? user.apiKeys[0].keyPreview
               : "No API key generated yet"}
           </span>
 
@@ -575,8 +560,49 @@ useEffect(() => {
             )
           )}
         </div>
-      </div>
 
+        
+        {generatedKey && (
+          <div style={{
+            marginTop: 15,
+            padding: 12,
+            borderRadius: 10,
+            background: "#fee2e2",
+            color: "#991b1b",
+            fontWeight: 600
+          }}>
+              This API key is shown only once. Save it now:
+
+            <div style={{
+              marginTop: 10,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 10,
+              wordBreak: "break-all"
+            }}>
+              <span>{generatedKey}</span>
+
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(generatedKey);
+                }}
+                style={{
+                  padding: "4px 8px",
+                  fontSize: 12,
+                  borderRadius: 6,
+                  border: "none",
+                  cursor: "pointer",
+                  background: "#0f172a",
+                  color: "#fff"
+                }}
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </Box>
 
     {/* 🧪 TEST AREA (TEMPORARY) */}
@@ -587,7 +613,7 @@ useEffect(() => {
 )}
 
          {active === "policies" && (
-            <Policy onChange={fetchDashboard} />
+            <Policy onChange={fetchDashboard} setActive={setActive} />
          )}
 
           {active === "create" && (
@@ -597,6 +623,99 @@ useEffect(() => {
          {active === "logs" && (
            <UsageLogs />
          )}
+
+         {showKeyWarning && (
+          <div style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.6)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 999
+          }}>
+            <div style={{
+              background: "#fff",
+              padding: 22,
+              borderRadius: 12,
+              width: 360,
+              textAlign: "center"
+            }}>
+
+              <h3> Important Security Notice</h3>
+
+              <p style={{ fontSize: 13, color: "#475569", lineHeight: "1.4" }}>
+                This API key will be shown only <b>ONCE</b> after generation.
+                <br /><br />
+                Save it immediately using a password manager or secure storage.
+                We cannot recover or re-display this key later.
+              </p>
+
+              <div style={{
+                display: "flex",
+                gap: 10,
+                marginTop: 20
+              }}>
+                <button
+                  onClick={() => {
+                    setShowKeyWarning(false);
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: 10,
+                    borderRadius: 8,
+                    border: "1px solid #ccc",
+                    background: "#fff",
+                    cursor: "pointer"
+                  }}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  disabled={loading}
+                  onClick={async () => {
+                    try {
+                      setLoading(true);
+
+                      setGeneratedKey(null);
+
+                      const res = await generateApiKey();
+                      const newKey = res.data.apiKey;
+
+                      setGeneratedKey(newKey);
+
+                      await fetchDashboard();
+
+                      setUser(prev => ({
+                        ...prev,
+                        apiKeys: [{ key: newKey }]
+                      }));
+
+                      setShowKeyWarning(false);
+
+                    } catch (err) {
+                      console.log(err);
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: 10,
+                    borderRadius: 8,
+                    background: loading ? "#9ca3af" : "#dc2626",
+                    color: "#fff",
+                    border: "none",
+                    cursor: loading ? "not-allowed" : "pointer"
+                  }}
+                >
+                  {loading ? "Generating..." : "I Understand, Generate"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         </div>
       </div>
