@@ -539,8 +539,10 @@ useEffect(() => {
             gap: 10
           }}
         >
-          <span>
-            {hasApiKey
+         <span>
+            {generatedKey
+              ? generatedKey
+              : hasApiKey
               ? user.apiKeys[0].keyPreview
               : "No API key generated yet"}
           </span>
@@ -562,7 +564,7 @@ useEffect(() => {
         </div>
 
         
-        {generatedKey && (
+       {generatedKey && (
           <div style={{
             marginTop: 15,
             padding: 12,
@@ -571,35 +573,7 @@ useEffect(() => {
             color: "#991b1b",
             fontWeight: 600
           }}>
-              This API key is shown only once. Save it now:
-
-            <div style={{
-              marginTop: 10,
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: 10,
-              wordBreak: "break-all"
-            }}>
-              <span>{generatedKey}</span>
-
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(generatedKey);
-                }}
-                style={{
-                  padding: "4px 8px",
-                  fontSize: 12,
-                  borderRadius: 6,
-                  border: "none",
-                  cursor: "pointer",
-                  background: "#0f172a",
-                  color: "#fff"
-                }}
-              >
-                Copy
-              </button>
-            </div>
+            This API key is shown only once. Save it now.
           </div>
         )}
       </div>
@@ -689,7 +663,7 @@ useEffect(() => {
 
                       setUser(prev => ({
                         ...prev,
-                        apiKeys: [{ key: newKey }]
+                        apiKeys: [{ keyPreview: newKey }]
                       }));
 
                       setShowKeyWarning(false);
@@ -759,4 +733,3 @@ function Box({ title, children }) {
     </div>
   );
 }
-
