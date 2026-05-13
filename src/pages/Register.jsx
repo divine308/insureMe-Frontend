@@ -8,23 +8,8 @@ const page = {
   minHeight: "100vh",
   background: "#f8fafc",
   display: "flex",
-  alignItems: "center",
   justifyContent: "center",
   padding: 30
-};
-
-const card = {
-  width: "100%",
-  maxWidth: 420,
-  background: "#ffffff",
-  border: "1px solid #e2e8f0",
-  borderRadius: 16,
-  padding: 24,
-  boxShadow: "0 4px 12px rgba(15, 23, 42, 0.05)",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "stretch",
-  boxSizing: "border-box"
 };
 
 const title = {
@@ -285,7 +270,18 @@ useEffect(() => {
 
  return (
   <div style={page}>
-    <div style={card}>
+    <div style={{ width: "100%", maxWidth: 420 }}>
+
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+        <img
+          src="/insureme.png"
+          alt="InsureMe"
+          style={{
+            height: 200,
+            opacity: 0.9
+          }}
+        />
+      </div>
 
       {mode === "register" && (
         <>

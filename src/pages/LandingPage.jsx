@@ -34,7 +34,7 @@ const nav = {
 };
 
 const hero = {
-  background: "linear-gradient(135deg, #0f172a, #1e3a8a, #2563eb)",
+  background: "linear-gradient(135deg, #173c92, #829be6, #4676db)",
   color: "#fff",
   padding: "80px 20px",
   textAlign: "center"
@@ -64,7 +64,8 @@ const btnSecondary = {
 const section = {
   padding: "60px 20px",
   maxWidth: 1000,
-  margin: "0 auto"
+  margin: "0 auto",
+  marginTop: "-3rem"
   
 };
 
@@ -83,12 +84,17 @@ const card = {
 };
 
 const codeBox = {
-  background: "#0f172a",
-  color: "#fff",
+  background: "transaparent",
+  color: "#000000",
   padding: 20,
   borderRadius: 12,
   fontSize: 13,
-  overflowX: "auto"
+  lineHeight: 1.6,
+  letterSpacing: "0.2px",
+  whiteSpace: "pre-wrap",
+  overflowX: "auto",
+  fontFamily:
+    "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
 };
 
 export default function Landing() {
@@ -133,12 +139,15 @@ export default function Landing() {
       <div style={hero}>
         <div style={{ marginBottom: 20 }}>
           <img
-            src="/insureme.jpg"
+            src="/insureme.png"
             alt="InsureMe Logo"
             style={{
-              height: 150,
+              height: 250,
               width: "auto",
-              objectFit: "contain"
+              objectFit: "contain",
+              marginTop: "-6rem",
+              marginBottom: "-4rem"
+
             }}
           />
         </div>
