@@ -394,21 +394,22 @@ const styles = {
     marginTop: 14,
     display: "flex",
     flexDirection: "column",
-    gap: 10
+    gap: 10,
+    alignItems: "center"
   },
 
   textarea: {
     width: "100%",
-    minHeight: 90,
+    minHeight: 50,
     padding: "12px 14px",
     borderRadius: 14,
     border: "1px solid #e2e8f0",
     outline: "none",
-    fontSize: 14,
+    fontSize: 16,
     resize: "none",
     background: "#ffffff",
     color: "#0f172a",
-    height: "2rem"
+    height: "2rem",
   },
 
   sendButton: {
@@ -426,3 +427,4 @@ const styles = {
     gap: 10
   }
 };
+

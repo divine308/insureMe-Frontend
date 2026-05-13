@@ -491,100 +491,105 @@ useEffect(() => {
       )} */}
 
       {active === "api" && (
-  <>
-    <Box title="API Key Management">
+        <>
+          <Box title="API Key Management">
 
-      <p style={{ fontSize: 13, color: "#64748b" }}>
-        Generate and manage your InsureMe API key
-      </p>
+            <p style={{ fontSize: 13, color: "#64748b" }}>
+              Generate and manage your InsureMe API key
+            </p>
 
-      {!hasApiKey && (
-        <button
-          disabled={loading}
-          onClick={() => setShowKeyWarning(true)}
-          style={{
-            marginTop: 12,
-            padding: "10px 14px",
-            borderRadius: 8,
-            border: "none",
-            background: loading ? "#475569" : "#0f172a",
-            color: "#fff",
-            cursor: loading ? "not-allowed" : "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8
-          }}
-        >
-          {loading ? <Spinner /> : "Generate API Key"}
-        </button>
-      )}
-
-      <div style={{ marginTop: 20 }}>
-        <div style={{ fontSize: 12, color: "#64748b" }}>
-          Current API Key:
-        </div>
-
-        <div
-          style={{
-            marginTop: 6,
-            fontSize: 14,
-            wordBreak: "break-all",
-            padding: "10px",
-            background: "#f1f5f9",
-            borderRadius: 8,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 10
-          }}
-        >
-         <span>
-            {generatedKey
-              ? generatedKey
-              : hasApiKey
-              ? user.apiKeys[0].keyPreview
-              : "No API key generated yet"}
-          </span>
-
-          {hasApiKey && (
-            copied ? (
-              <FiCheck style={{ color: "green" }} />
-            ) : (
-              <FiCopy
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  navigator.clipboard.writeText(user.apiKeys[0].key);
-                  setCopied(true);
-                  setTimeout(() => setCopied(false), 1500);
+            {!hasApiKey && (
+              <button
+                disabled={loading}
+                onClick={() => setShowKeyWarning(true)}
+                style={{
+                  marginTop: 12,
+                  padding: "10px 14px",
+                  borderRadius: 8,
+                  border: "none",
+                  background: loading ? "#475569" : "#0f172a",
+                  color: "#fff",
+                  cursor: loading ? "not-allowed" : "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8
                 }}
-              />
-            )
-          )}
-        </div>
+              >
+                {loading ? <Spinner /> : "Generate API Key"}
+              </button>
+            )}
 
-        
-       {generatedKey && (
-          <div style={{
-            marginTop: 15,
-            padding: 12,
-            borderRadius: 10,
-            background: "#fee2e2",
-            color: "#991b1b",
-            fontWeight: 600
-          }}>
-            This API key is shown only once. Save it now.
-          </div>
-        )}
-      </div>
-    </Box>
+            <div style={{ marginTop: 20 }}>
+              <div style={{ fontSize: 12, color: "#64748b" }}>
+                Current API Key:
+              </div>
 
-    {/* 🧪 TEST AREA (TEMPORARY) */}
-    <Box title="API Test Console (Dev Only)">
-      <ApiTester onChange={fetchDashboard} />
-    </Box>
-  </>
-)}
+              <div
+                style={{
+                  marginTop: 6,
+                  fontSize: 14,
+                  wordBreak: "break-all",
+                  padding: "10px",
+                  background: "#f1f5f9",
+                  borderRadius: 8,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 10
+                }}
+              >
+              <span>
+                  {generatedKey
+                    ? generatedKey
+                    : hasApiKey
+                    ? user.apiKeys[0].keyPreview
+                    : "No API key generated yet"}
+                </span>
+
+                {hasApiKey && (
+                  copied ? (
+                    <FiCheck style={{ color: "green" }} />
+                  ) : (
+                    <FiCopy
+                      style={{ cursor: "pointer" }}
+                     onClick={() => {
+                      const keyToCopy = generatedKey || user?.apiKeys?.[0]?.key;
+
+                      if (!keyToCopy) return;
+
+                      navigator.clipboard.writeText(keyToCopy);
+                      setCopied(true);
+
+                      setTimeout(() => setCopied(false), 1500);
+                    }}
+                    />
+                  )
+                )}
+              </div>
+
+              
+            {generatedKey && (
+                <div style={{
+                  marginTop: 15,
+                  padding: 12,
+                  borderRadius: 10,
+                  background: "#fee2e2",
+                  color: "#991b1b",
+                  fontWeight: 600
+                }}>
+                  This API key is shown only once. Save it now.
+                </div>
+              )}
+            </div>
+          </Box>
+
+          {/* 🧪 TEST AREA (TEMPORARY) */}
+          <Box title="API Test Console (Dev Only)">
+            <ApiTester onChange={fetchDashboard} />
+          </Box>
+        </>
+      )}
 
          {active === "policies" && (
             <Policy onChange={fetchDashboard} setActive={setActive} />
