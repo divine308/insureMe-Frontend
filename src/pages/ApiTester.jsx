@@ -9,6 +9,8 @@ import {
   FiActivity
 } from "react-icons/fi";
 
+const backendURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, '');
+
 export default function ApiTester({ onChange }) {
   const [apiKey, setApiKey] = useState("");
   const [message, setMessage] = useState("");
@@ -40,7 +42,7 @@ export default function ApiTester({ onChange }) {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/insuremeAi/ask", {
+      const res = await fetch(`${backendURL}/api/insuremeAi/ask`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
