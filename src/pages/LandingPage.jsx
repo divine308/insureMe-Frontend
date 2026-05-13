@@ -131,6 +131,18 @@ export default function Landing() {
       </div>
 
       <div style={hero}>
+        <div style={{ marginBottom: 20 }}>
+          <img
+            src="/insureme.jpg"
+            alt="InsureMe Logo"
+            style={{
+              height: 150,
+              width: "auto",
+              objectFit: "contain"
+            }}
+          />
+        </div>
+
         <h1 style={{ fontSize: 42, marginBottom: 10 }}>
           Insurance Infrastructure API
         </h1>
@@ -158,6 +170,7 @@ export default function Landing() {
             View Dashboard
           </button>
         </div>
+
       </div>
 
       <div style={section}>
