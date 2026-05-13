@@ -13,7 +13,8 @@ const input = {
   padding: 10,
   marginBottom: 12,
   border: "1px solid #e2e8f0",
-  borderRadius: 10
+  borderRadius: 10,
+  fontSize: 16
 };
 
 const button = {
