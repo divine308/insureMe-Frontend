@@ -195,22 +195,6 @@ const validate = () => {
   return Object.keys(err).length === 0;
 };
 
-//  const submit = async () => {
-//   setInlineError(null);
-//   try {
-//     setLoading(true);
-
-//     await registerUser(form);
-
-//     showToast("OTP sent to your email", "success");
-//     setStep(2);
-//   } catch (err) {
-//    showToast(err.response?.data?.error || "Registration failed", "error");
-//   } finally {
-//     setLoading(false);
-//   }
-// };
-
 const submit = async () => {
   setInlineError(null);
 
@@ -267,6 +251,8 @@ const login = async () => {
       return;
     }
 
+    setLoading(true);
+    
     const res = await loginUser({
       email: form.email,
       password: form.password
@@ -279,6 +265,9 @@ const login = async () => {
     nav("/dashboard");
   } catch (err) {
     showToast(err.response?.data?.error || "Login failed", "error");
+  }
+  finally {
+    setLoading(false);
   }
 };
 
