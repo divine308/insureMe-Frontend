@@ -286,7 +286,7 @@ const styles = {
     border: "none",
     outline: "none",
     background: "transparent",
-    fontSize: 14,
+    fontSize: 16,
     color: "#0f172a"
   },
 
