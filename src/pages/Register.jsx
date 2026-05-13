@@ -46,7 +46,7 @@ const input = {
   marginBottom: 12,
   border: "1px solid #e2e8f0",
   borderRadius: 10,
-  fontSize: 14,
+  fontSize: 16,
   outline: "none",
   boxSizing: "border-box" 
   
